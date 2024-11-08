@@ -35,6 +35,7 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
         WHEN NO_DATA_FOUND THEN
          utl_file.fclose(f1ExchangeData);
       END;  
+      
 --Loading Data from CSV file to REPOSITORY_DATA Table
 
   f2RepositoryData := utl_file.fopen('Dir2','depository_data.csv','r');
