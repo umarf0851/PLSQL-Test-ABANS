@@ -14,9 +14,14 @@ GRANT READ,WRITE ON DIRECTORY Dir2 TO USER;
 -------------------------------------------End of Instructions-----------------------
 
 
+
+
+
 CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
 
--- This Procedure Functions as Loading the Data into Tables from CSV files and Validates data consistency and Exception Handling in terms of File Handling............
+-- This Procedure Functions as Loading the Data into Tables from CSV files and Validates data consistency and Exception Handling in terms of File Handling....
+
+
  
  CREATE OR REPLACE PROCEDURE ProcParentLoad (RetCode OUT VARCHAR2,
                                          RetSTR  OUT VARCHAR2) IS
