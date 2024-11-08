@@ -150,4 +150,8 @@ END PLSQLTEST;
 
 
 
---Logic 2
+-----------------Logic 2--------------- In this Logic SQL Loader can be used to Load Data into the Tables through Command Promt.
+        --------------------                             But in Logic 1 Operations are done using Utl Directiories.
+ -- Logic 3 can be used through Oracle Data integrator (ODI) tools, But it depends on Oracle versions to which logic to use versions like 19c is best suitable for Logic 2 ------------------------------------
+ ------------------ 
+                                               
