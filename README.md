@@ -3,7 +3,7 @@
 --- Logic 1 --(Data to use : exchange_data.csv and depository_data.csv)  
 ----Instructions for DBA to create Directories and To Give read,write access to the Session UserName.------------------------
 -------------So that these Directories can be accessed by Procedures for further proceedings -----------------------------
---------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------- 
 Create DIRECTORY Dir1 AS 'Path of the exchange_data.csv';
 Create DIRECTORY Dir2 AS 'Path of the repository_data.csv';
 
