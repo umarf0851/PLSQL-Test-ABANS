@@ -20,16 +20,16 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
       
         f1ExchangeData   := utl_file.fopen('Dir1','exchange_data.csv','r');
         LOOP
-          utl_file.get_line(f1ExchangeData,Var1Exch);
+          utl_file.get_line(f1ExchangeData,Var1Exch_Rec);          --The rows get stored into record and insertion into table occurs below.
           BEGIN
            INSERT INTO EXCHANGE_DATA(User_ID, Stock_ID, Stock_Name, Stock_Count)
-           VALUES(Var1Exch(1), Var1Exch(2), Var1Exch(3), Var1Exch(4);
+           VALUES(Var1Exch_Rec.User_ID, Var1Exch_Rec.Stock_ID, Var1Exch_Rec.Stock_Name, Var1Exch_Rec.Stock_Count;
            COMMIT;
           EXCEPTION
             WHEN OTHERS THEN
             RAISE Error1;
           END;
-          dbms_output.put_line(Var1Exch)
+          dbms_output.put_line(Var1Exch_Rec)
         END LOOP;
       EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -39,16 +39,16 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
 
   f2RepositoryData := utl_file.fopen('Dir2','depository_data.csv','r');
      LOOP
-          utl_file.get_line(f2RepositoryData,Var2Repo);
+          utl_file.get_line(f2RepositoryData,Var2Repo_Rec);
           BEGIN
            INSERT INTO REPOSITORY_DATA(User_ID, Stock_ID, Stock_Name, Stock_Count)
-           VALUES(Var2Repo(1), Var2Repo(2), Var2Repo(3), Var2Repo(4);
+           VALUES(Var2Repo_Rec.User_ID, Var2Repo_Rec.Stock_ID, Var2Repo_Rec.Stock_Name, Var2Repo_Rec.Stock_Count;
            COMMIT;
           EXCEPTION
             WHEN OTHERS THEN
             RAISE Error2;
           END;
-          dbms_output.put_line(Var2Repo)
+          dbms_output.put_line(Var2Repo_Rec)
         END LOOP;
       EXCEPTION
         WHEN NO_DATA_FOUND THEN
