@@ -1,9 +1,22 @@
 # PLSQL-Test-ABANS
 
--- Logic 1 --(Data to use : exchange_data.csv and depository_data.csv)
+--- Logic 1 --(Data to use : exchange_data.csv and depository_data.csv)  
+----Instructions for DBA to create Directories and To Give read,write access to the Session UserName.------------------------
+-------------So that these Directories can be accessed by Procedures for further proceedings -----------------------------
+--------------------------------------------------------------------------------------------
+Create DIRECTORY Dir1 AS 'Path of the exchange_data.csv';
+Create DIRECTORY Dir2 AS 'Path of the repository_data.csv';
+
+GRANT READ,WRITE ON DIRECTORY Dir1 TO USER;
+GRANT READ,WRITE ON DIRECTORY Dir2 TO USER;
+
+-------------------THESE Dir1 and Dir2 is used during loading of files----------------------------------
+--------------------------------------------------------------------------------------------------------
+
 
 CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
 
+--- This Procedure Functions as Loading the Data into Tables from CSV files and Validates data consistency and Exception Handling in terms of File Handling............
  CREATE OR REPLACE PROCEDURE ProcParentLoad (RetCode OUT VARCHAR2,
                                          RetSTR  OUT VARCHAR2) IS
     
@@ -60,11 +73,15 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
       EXCEPTION
      WHEN OTHERS THEN
       RetCode := "E";
-      RetSTR  := "ERROR";
-      
- END ProcParentLoad;
-                              
+      RetSTR  := "ERROR" | SQLEERM;
 
+      --Calling the Below procedure to Execute the whole scenario in single step
+     Execute ProcDataProcess(RetCode, 
+                              RetSTR);
+ END ProcParentLoad;
+
+                              
+-- This Procedure functions as Data Processing and Identifying Mismatch, Test Case Scenario's and Log the outcomes into MISMATCH_TABLE with Remarks................
  CREATE OR REPLACE PROCEDURE ProcDataProcess(RetCode OUT VARCHAR2,
                                              RetSTR  OUT VARCHAR2) IS
     COUNT_Exch   NUMBER;
@@ -125,7 +142,7 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
    EXCEPTION
       WHEN OTHERS THEN
        RetCode := "E";
-       RetSTR := "ERROR" | ERRSTR ;
+       RetSTR := "ERROR" | SQLERRM ;
        
  END ProcDataProcess;
  
