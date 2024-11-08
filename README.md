@@ -69,6 +69,8 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
                                              RetSTR  OUT VARCHAR2) IS
     COUNT_Exch   NUMBER;
     COUNT_Repo   NUMBER;
+    Stock_ID_COUNT_Exch NUMBER;
+    Stock_ID_COUNT_Repo NUMBER;
     CURSOR C1 is SELECT * from EXCHANGE_DATA;
     CURSOR C2 is SELECT * from REPOSITORY_DATA;
 
@@ -85,8 +87,8 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
 
               IF COUNT_Exch <> COUNT_Repo THEN
                   BEGIN
-                    INSERT INTO MISMATCH_TABLE (User_ID, Stock_ID,Stock_Name,Exch_Stock_Count, Repo_Stock_Count)
-                    VALUES (i.User_ID, i.Stock_ID, i.Stock_Name, COUNT_Exch, COUNT_Repo );
+                    INSERT INTO MISMATCH_TABLE (User_ID, Stock_ID,Stock_Name,Exch_Stock_Count, Repo_Stock_Count, REMARKS)
+                    VALUES (i.User_ID, i.Stock_ID, i.Stock_Name, COUNT_Exch, COUNT_Repo, "Quantity of Stock Counts mismatch between two Sources" );
                     COMMIT;
                   EXCEPTION
                   WHEN OTHERS THEN
@@ -100,10 +102,23 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
 -- TEST CASE 2 : Mismatch of Stock ID for USER IDs
 
    FOR j in C1 LOOP 
-     SELECT C1.Stock_ID, C2.Stock_ID
+     SELECT COUNT(C1.Stock_ID), COUNT(C2.Stock_ID)
       INTO  Stock_ID_COUNT_Exch, Stock_ID_COUNT_Repo
       WHERE C1.User_ID = C2.User_ID;
-            
+
+            IF Stock_ID_COUNT_Exch <> Stock_ID_COUNT_Repo THEN
+                
+                BEGIN
+                    INSERT INTO MISMATCH_TABLE (User_ID, Stock_ID,Stock_Name,Exch_Stock_Count, Repo_Stock_Count, REMARKS)
+                    VALUES (i.User_ID, "Mismatch", i.Stock_Name, Stock_ID_COUNT_Exch, Stock_ID_COUNT_Repo, "Quantity of Stock_IDS mismatch between two Sources" );
+                    COMMIT;
+                  EXCEPTION
+                  WHEN OTHERS THEN
+                   RetCode := "E";
+                   RetSTR := "ERROR" | i.User_ID  ;    
+                  END;
+
+            END IF;
 
    END LOOP;
 
