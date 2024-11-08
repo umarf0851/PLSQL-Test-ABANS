@@ -20,6 +20,7 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
  
  CREATE OR REPLACE PROCEDURE ProcParentLoad (RetCode OUT VARCHAR2,
                                          RetSTR  OUT VARCHAR2) IS
+    
     f1ExchangeData       utl_file.file_type;
     f2RepositoryData     utl_file.file_type;
     Var1Exch_Rec         EXCHANGE_DATA%rowtype;    --Declaring record type to read it from csv file through utl file directory and to insert into table
