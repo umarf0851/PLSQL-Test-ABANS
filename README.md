@@ -39,7 +39,7 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
 
   f2RepositoryData := utl_file.fopen('Dir2','depository_data.csv','r');
      LOOP
-          utl_file.get_line(f2RepositoryData,Var2Repo_Rec);
+          utl_file.get_line(f2RepositoryData,Var2Repo_Rec);                          --The rows get stored into record and insertion into table occurs below.
           BEGIN
            INSERT INTO REPOSITORY_DATA(User_ID, Stock_ID, Stock_Name, Stock_Count)
            VALUES(Var2Repo_Rec.User_ID, Var2Repo_Rec.Stock_ID, Var2Repo_Rec.Stock_Name, Var2Repo_Rec.Stock_Count;
