@@ -4,8 +4,8 @@
 
 CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
 
- CREATE OR REPLACE PROCEDURE ProcParent (F1 in file_type,
-                                         F2 in file_type) IS
+ CREATE OR REPLACE PROCEDURE ProcParent (RetCode OUT VARCHAR2,
+                                         RetSTR  OUT VARCHAR2) IS
     
     f1ExchangeData       utl_file.file_type;
     f2RepositoryData     utl_file.file_type;
@@ -13,9 +13,9 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
     Var2Repo_Rec         REPOSITORY_DATA%rowtype;  --Declaring record type to read it from csv file through utl file directory and to insert into table
     Error1               Exception;
     Error2               Exception;
-    
-      BEGIN
 
+    BEGIN
+      BEGIN
       --Loading Data from CSV file to EXCHANGE_DATA Table
       
         f1ExchangeData   := utl_file.fopen('Dir1','exchange_data.csv','r');
@@ -38,6 +38,7 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
       
 --Loading Data from CSV file to REPOSITORY_DATA Table
 
+ BEGIN 
   f2RepositoryData := utl_file.fopen('Dir2','depository_data.csv','r');
      LOOP
           utl_file.get_line(f2RepositoryData,Var2Repo_Rec);                          --The rows get stored into record and insertion into table occurs below.
@@ -54,7 +55,12 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
       EXCEPTION
         WHEN NO_DATA_FOUND THEN
          utl_file.fclose(f2RepositoryData);
-      END;  
+      END;
+
+      EXCEPTION
+     WHEN OTHERS THEN
+      RetCode := "E";
+      RetSTR  := "ERROR";
       
  END ProcParent:
                               
