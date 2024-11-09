@@ -1,30 +1,28 @@
 # PLSQL-Test-ABANS
 
---- Logic 1 --(Data to use : exchange_data.csv and depository_data.csv)  
-----Instructions for DBA to create Directories and To Give read,write access to the Session UserName.------------------------
--------------So that these Directories can be accessed by Procedures for further proceedings -----------------------------
+--- Logic 1 --
+(Data to use : exchange_data.csv and depository_data.csv)  
+--Instructions for DBA: To create Directories and To Give read,write access to the Session UserName.
+--So that these Directories can be accessed by Procedures for further proceedings.
 -------------------------------------------------------------------------------------------- 
+```sql
 Create DIRECTORY Dir1 AS 'Path of the exchange_data.csv';
 Create DIRECTORY Dir2 AS 'Path of the repository_data.csv';
 
 GRANT READ,WRITE ON DIRECTORY Dir1 TO USER;
 GRANT READ,WRITE ON DIRECTORY Dir2 TO USER;
-
+```
 -------------------THESE Dir1 and Dir2 is used during loading of files----------------------------------
--------------------------------------------End of Instructions-----------------------
 
 
-
-
-
+```plsql
 CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
 
--- This Procedure Functions as Loading the Data into Tables from CSV files and Validates data consistency and Exception Handling in terms of File Handling....
+-- This Procedure Functions as Loading the Data into Tables from CSV files
+   and Validates data consistency and Exception Handling in terms of File Handling....
 
-
- 
  CREATE OR REPLACE PROCEDURE ProcParentLoad (RetCode OUT VARCHAR2,
-                                         RetSTR  OUT VARCHAR2) IS
+                                             RetSTR  OUT VARCHAR2) IS
     
     f1ExchangeData       utl_file.file_type;
     f2RepositoryData     utl_file.file_type;
@@ -39,7 +37,7 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
       
         f1ExchangeData   := utl_file.fopen('Dir1','exchange_data.csv','r');
         LOOP
-          utl_file.get_line(f1ExchangeData,Var1Exch_Rec);          --The rows get stored into record and insertion into table occurs below.
+          utl_file.get_line(f1ExchangeData,Var1Exch_Rec);          --The rows get stored into record and insertion into                                                                     -- table occurs below.
           BEGIN
            INSERT INTO EXCHANGE_DATA(User_ID, Stock_ID, Stock_Name, Stock_Count)
            VALUES(Var1Exch_Rec.User_ID, Var1Exch_Rec.Stock_ID, Var1Exch_Rec.Stock_Name, Var1Exch_Rec.Stock_Count;
@@ -60,7 +58,7 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
  BEGIN 
   f2RepositoryData := utl_file.fopen('Dir2','depository_data.csv','r');
      LOOP
-          utl_file.get_line(f2RepositoryData,Var2Repo_Rec);                          --The rows get stored into record and insertion into table occurs below.
+          utl_file.get_line(f2RepositoryData,Var2Repo_Rec);          --The rows get stored into record -                                                                                      --and insertion into table occurs below.
           BEGIN
            INSERT INTO REPOSITORY_DATA(User_ID, Stock_ID, Stock_Name, Stock_Count)
            VALUES(Var2Repo_Rec.User_ID, Var2Repo_Rec.Stock_ID, Var2Repo_Rec.Stock_Name, Var2Repo_Rec.Stock_Count;
@@ -87,7 +85,7 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
  END ProcParentLoad;
 
                               
--- This Procedure functions as Data Processing and Identifying Mismatch, Test Case Scenario's and Log the outcomes into MISMATCH_TABLE with Remarks................
+-- This Procedure functions as Data Processing and Identifying Mismatch, Test Case Scenario's and Log the outcomes into ---MISMATCH_TABLE with Remarks................
  CREATE OR REPLACE PROCEDURE ProcDataProcess(RetCode OUT VARCHAR2,
                                              RetSTR  OUT VARCHAR2) IS
     COUNT_Exch   NUMBER;
@@ -106,7 +104,7 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
             C1.Stock_ID = C2.Stock_ID AND
             C1.Stock_Name = C2.Stock_Name;
 
---- TEST CASE 1 : Mismatched Stock Count will be inserted into MISMATCH_TABLE (This table will show the difference between Stock Count)
+--- TEST CASE 1 : Mismatched Stock Count will be inserted into MISMATCH_TABLE (This table will show the difference ----between Stock Count)
 
               IF COUNT_Exch <> COUNT_Repo THEN
                   BEGIN
@@ -153,11 +151,10 @@ CREATE OR REPLACE PACKAGE BODY PLSQLTEST AS
  END ProcDataProcess;
  
 END PLSQLTEST;
+```
 
-
-
------------------Logic 2--------------- In this Logic SQL Loader can be used to Load Data into the Tables through Command Promt.
-        --------------------                             But in Logic 1 Operations are done using Utl Directiories.
+--Logic 2 : In this Logic SQL Loader can be used to Load Data into the Tables through Command Promt.
+-------     But in Logic 1 Operations are done using Utl Directiories.
  -- Logic 3 can be used through Oracle Data integrator (ODI) tools, But it depends on Oracle versions to which logic to use versions like 19c is best suitable for Logic 2 ------------------------------------
- ------------------ 
+ -----------------
                                                
